@@ -1,0 +1,9 @@
+{
+  "username": "notes",
+  "password": "notes",
+  "db": "notes",
+  "dialect": "mysql",
+  "host": "localhost",
+  "tokenSecret": "rzVLBes9r3suZ2CupNnY",
+  "graphQLServer": "http://localhost:3100/api"
+}
