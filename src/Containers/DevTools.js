@@ -6,6 +6,7 @@ import { createDevTools } from 'redux-devtools';
 // Monitors are separate packages, and you can make a custom one
 import LogMonitor from 'redux-devtools-log-monitor';
 import DockMonitor from 'redux-devtools-dock-monitor';
+import SlideMonitor from 'redux-slider-monitor';
 
 // createDevTools takes a monitor and produces a DevTools component
 const DevTools = createDevTools(
@@ -13,8 +14,9 @@ const DevTools = createDevTools(
   // Consult their repositories to learn about those props.
   // Here, we put LogMonitor inside a DockMonitor.
   // Note: DockMonitor is visible by default.
-  <DockMonitor defaultPosition="right" toggleVisibilityKey="ctrl-h" changePositionKey="ctrl-q" defaultIsVisible={true} >
+  <DockMonitor defaultPosition="right" toggleVisibilityKey="ctrl-h" changePositionKey="ctrl-q" defaultIsVisible={true} changeMonitorKey="ctrl-j">
     <LogMonitor theme="tomorrow" />
+    <SlideMonitor keyboardEnabled />
   </DockMonitor>
 );
 

@@ -48,7 +48,7 @@ function editNote(token = '', id = '', url = '', title = '', text = '', pvt = ''
   if(args) {
     args = args.join(",");
   }
-  let editNote = `mutation editNote {addNote(token: "${token}", id:${id} url:"${url}", title:"${title}", text:"${text}", private:${pvt}){${args}}}`;
+  let editNote = `mutation editNote {editNote(token: "${token}", id:${id}, url:"${url}", title:"${title}", text:"${text}", private:${pvt}){${args}}}`;
   return post(editNote);
 }
 

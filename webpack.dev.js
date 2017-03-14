@@ -11,6 +11,7 @@ module.exports = {
 		publicPath: '/js/' //Where the js gets loaded from
 	},
 	devtool: 'eval',
+	cache: false,
 	module: {
 		preLoaders: [{
 			test: /\.json$/,

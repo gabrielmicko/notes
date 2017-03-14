@@ -24,6 +24,7 @@ class Edit extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   componentDidMount() {
+    console.log('CUC');
     let id = parseFloat(this.props.params.id);
     let key = parseFloat(_findIndex(this.props.notes, {'id':id}));
     this.props.getNote(this.props.token, id);
@@ -34,12 +35,14 @@ class Edit extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    this.props.addNote(
+    let note = this.props.notes[this.state.key];
+    this.props.editNote(
       this.props.token,
-      this.state.form_url,
-      this.state.form_title,
-      this.state.form_text,
-      this.state.form_private
+      this.props.params.id,
+        (note.url || ''),
+      note.title,
+      note.text,
+      note.private
     );
   }
 
@@ -54,13 +57,21 @@ class Edit extends React.Component {
 
   render() {
     let note = this.props.notes[this.state.key];
+    if(!note) {
+      note = {
+        'url': '',
+        'title': '',
+        'text': '',
+        'private': true
+      }
+    }
     return (
       <div>
         <h1>Edit a note</h1>
         <form className="form" onSubmit={this.handleSubmit}>
           <div className="form-element">
             <label>URL</label>
-            <input name="url" value={note.url} onChange={this.handleInputChange} type="text" />
+            <input name="url" value={(note.url || '')} onChange={this.handleInputChange} type="text" />
           </div>
           <div className="form-element">
             <label>Title</label>
@@ -97,7 +108,21 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  editNote: (token, url, title, text, pvt) => {
+  editNote: (token, id, url, title, text, pvt) => {
+      editNote(token, id, url, title, text, pvt, ['id', 'url', 'title', 'text', 'private', 'updatedAt', 'createdAt']).then((response) => {
+        if(response.data.data.editNote.length > 0) {
+          let id = response.data.data.editNote[0].id;
+          let url = response.data.data.editNote[0].url;
+          if(url) {
+            url = '/' + url;
+          }
+          dispatch(pushNote(response.data.data.editNote));
+          browserHistory.push('/note/' + id + url);
+        }
+        else {
+          alert('Save failed');
+        }
+      });
   },
   saveNoteToStore: (note, id) => {
     dispatch(updateNote(note, id));

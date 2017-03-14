@@ -1,5 +1,5 @@
 import _findIndex from 'lodash/findIndex';
-let testNotes = []
+let testNotes = [];
 
 const notes = (state = testNotes, action) => {
     switch(action.type){
@@ -8,12 +8,12 @@ const notes = (state = testNotes, action) => {
         break;
         case 'UPDATE_NOTE':
           let key = parseFloat(_findIndex(state, {'id':action.id}));
-          var c= [
+          var note = Object.assign({}, action.note[0]);
+          return [
             ...state.slice(0, key),
-            ...action.note,
+            ...[note],
             ...state.slice(key + 1, state.length),
           ];
-          return c;
         break;
         case 'ADD_NOTE':
           return [

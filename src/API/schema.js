@@ -228,19 +228,26 @@ const Mutation = new GraphQLObjectType({
           },
         resolve(root, args) {
             if(args.token && isToken(args.token)) {
-              delete args.token;
-              Db.models.notes.update(
-                args,
-                {
-                  where: {
-                    id: args.id
+              return new Promise((resolve) => {
+                delete args.token;
+                var updateNote = Db.models.notes.update(
+                  args,
+                  {
+                    where: {
+                      id: args.id
+                    }
                   }
-                }
-              );
-              return Db.models.notes.findAll({
-                where: args
+                );
+                
+                updateNote.then(() => {
+                  resolve(Db.models.notes.findAll({
+                    where: {
+                      id: args.id
+                    }
+                  }))
+                });
+                
               });
-
             }
             else {
               return [];
