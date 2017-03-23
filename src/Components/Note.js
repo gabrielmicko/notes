@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { getNotes } from '../Helpers/api.js';
+import { getNotes, deleteNote } from '../Helpers/api.js';
 import { updateNote } from '../Actions/notes.js';
+import {browserHistory} from 'react-router';
 import _findIndex from 'lodash/findIndex';
 
 
@@ -12,6 +13,7 @@ class Note extends React.Component {
     this.state = {
       key: 0
     };
+    this.deleteNote = this.deleteNote.bind(this);
   }
 
   componentDidMount() {
@@ -19,11 +21,31 @@ class Note extends React.Component {
     let key = parseFloat(_findIndex(this.props.notes, {'id':id}));
     this.props.getNote(this.props.token, id);
     this.setState({
-      key: key
+      key: key,
+      id: id
     });
   }
+  
+  deleteNote() {
+    if(confirm('Would you like to delete this note?')) {
+      this.props.deleteNote(this.props.token, this.state.id);
+    }
+  }
+  
   render() {
     let note = this.props.notes[this.state.key];
+    if(!note) {
+      note = {
+        id: 0,
+        title: '',
+        text: '',
+        url: '',
+        private: false,
+        createdAt: '',
+        updatedAt: '',
+      }
+    }
+    
     
     const editButton = (note) => {
       if(this.props.token) {
@@ -41,6 +63,7 @@ class Note extends React.Component {
       <div className="note">
         <h1><strong>{note.title}</strong></h1>
         <table>
+          <tbody>
           <tr>
             <td>Private</td>
             <td>{(note.private === true) ? 'yes' : 'no'}</td>
@@ -61,6 +84,7 @@ class Note extends React.Component {
             <td>Options</td>
             <td>{editButton(note)} | {deleteButton(note)}</td>
           </tr>
+          </tbody>
         </table>
         <div className="text">
           {note.text}
@@ -78,6 +102,13 @@ const mapDispatchToProps = ((dispatch, state) => ({
   getNote: (token, id) => {
     getNotes(token, id, '', ['id', 'url', 'title', 'text', 'private', 'createdAt', 'updatedAt']).then((responseData) => {
       dispatch(updateNote(responseData.data.data.notes, id))
+    });
+  },
+  deleteNote: (token, id) => {
+    deleteNote(token, id, ['id']).then((responseData) => {
+      if(responseData.data.data.deleteNote.length) {
+        browserHistory.push('/list');
+      }
     });
   }
 }));

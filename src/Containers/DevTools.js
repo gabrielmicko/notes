@@ -19,7 +19,7 @@ const DevTools = createDevTools(
   <DockMonitor defaultPosition="right" toggleVisibilityKey="ctrl-h" changePositionKey="ctrl-q" defaultIsVisible={true} changeMonitorKey="ctrl-e">
     <LogMonitor theme="tomorrow" />
     <SlideMonitor keyboardEnabled="false" />
-    <ChartMonitor invertTheme="true" />
+    <ChartMonitor invertTheme={true} />
   </DockMonitor>
 );
 

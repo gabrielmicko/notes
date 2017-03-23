@@ -10,7 +10,9 @@ function post(query) {
 }
 
 function getNotes(token = '', id = '', title = '', args = []) {
+  console.log('TOKEN');
   if(token) {
+    console.log(token);
     token = `token:"${token}",`;
   }
 
@@ -56,7 +58,7 @@ function deleteNote(token = '', id = '', args = []) {
   if(args) {
     args = args.join(",");
   }
-  let deleteNote = `mutation deleteNote {deleteNote(token: "${token}", id:"${id}") {${args}}}`;
+  let deleteNote = `mutation deleteNote {deleteNote(token: "${token}", id:${id}) {${args}}}`;
   return post(deleteNote);
 }
 

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { getNotes, deleteNote } from '../Helpers/api.js';
+import { getNotes } from '../Helpers/api.js';
 import { setNotes } from '../Actions/notes.js';
 
 class List extends React.Component {
@@ -49,11 +49,6 @@ const mapDispatchToProps = ((dispatch, state) => ({
       dispatch(setNotes(responseData.data.data.notes))
     });
   },
-  deleteNote: (token, id) => {
-    deleteNote(token, id, ['id']).then((responseData) => {
-      dispatch(setNotes(responseData.data.data.notes))
-    });
-  }
 }));
 
 export default connect((state) => {
