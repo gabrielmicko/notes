@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { getNotes } from '../Helpers/api.js';
+import { getNotes, deleteNote } from '../Helpers/api.js';
 import { setNotes } from '../Actions/notes.js';
 
 class List extends React.Component {
@@ -14,10 +14,7 @@ class List extends React.Component {
   }
 
   render() {
-
-    const isPrivate = (bool) => {
-      return (bool) ? <span>&#128274;, </span> : '';
-    }
+    
     const editButton = (note) => {
       if(this.props.token) {
         return (<Link to={'/edit/' + (note.id) }>Edit</Link>);
@@ -30,8 +27,7 @@ class List extends React.Component {
             return (
               <li key={note.id}>
                 <h3>
-                <Link to={'/note/' + (note.id) + ((note.title) ? ('/' + encodeURIComponent(note.title)) : '')}>{note.title}</Link> ({isPrivate(note.private)}{note.updatedAt})
-                { editButton(note) }
+                <Link to={'/note/' + (note.id) + ((note.url) ? ('/' + encodeURIComponent(note.url)) : '')}>{note.title}</Link>
                 </h3>
               </li>
             )
@@ -49,7 +45,12 @@ List.propTypes = {
 
 const mapDispatchToProps = ((dispatch, state) => ({
   fetchAllNotes: (token) => {
-    getNotes(token, '', '', ['id', 'title', 'private', 'updatedAt']).then((responseData) => {
+    getNotes(token, '', '', ['id', 'url', 'title', 'private', 'updatedAt']).then((responseData) => {
+      dispatch(setNotes(responseData.data.data.notes))
+    });
+  },
+  deleteNote: (token, id) => {
+    deleteNote(token, id, ['id']).then((responseData) => {
       dispatch(setNotes(responseData.data.data.notes))
     });
   }

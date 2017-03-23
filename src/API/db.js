@@ -2,6 +2,8 @@ import Sequelize from 'sequelize';
 import _ from 'lodash';
 import Faker from 'faker';
 import Config from '../Config/config.json';
+import bcrypt from 'bcrypt';
+import { encrypt } from './encrypt';
 
 const Conn = new Sequelize(
   Config.db,
@@ -21,26 +23,24 @@ const Notes = Conn.define('notes', {
     unique: true,
   },
   url: {
-    type: Sequelize.STRING,
+    type: Sequelize.TEXT,
     allowNull: true,
-    validate: {
-      max: 255,
-    },
   },
   title: {
-    type: Sequelize.STRING,
+    type: Sequelize.TEXT('long'),
     allowNull: false,
-    validate: {
-      max: 255,
-    },
   },
   text: {
-    type: Sequelize.TEXT,
+    type: Sequelize.TEXT('long'),
     allowNull: false,
   },
   private: {
     type: Sequelize.BOOLEAN,
     defaultValue: 1,
+  },
+  deleted: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: 0,
   },
 });
 
@@ -65,18 +65,17 @@ const Users = Conn.define('users', {
 Conn.sync({
   force: true,
 }).then(() => {
+   Users.create({
+    username: 'gabriel',
+    password: bcrypt.hashSync('gabriel', 10)
+  });
   _.times(10,
     () => {
       return Notes.create({
-        url: Faker.internet.url(),
-        title: Faker.lorem.sentence(),
-        text: Faker.lorem.text(),
+        url: encrypt(Faker.internet.url()),
+        title: encrypt(Faker.lorem.sentence()),
+        text: encrypt(Faker.lorem.text()),
         private: Faker.random.boolean()
-      }).then(() => {
-        Users.create({
-          username: Faker.internet.userName(),
-          password: Faker.internet.password()
-        });
       })
     })
 });

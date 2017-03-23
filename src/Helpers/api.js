@@ -52,6 +52,14 @@ function editNote(token = '', id = '', url = '', title = '', text = '', pvt = ''
   return post(editNote);
 }
 
+function deleteNote(token = '', id = '', args = []) {
+  if(args) {
+    args = args.join(",");
+  }
+  let deleteNote = `mutation deleteNote {deleteNote(token: "${token}", id:"${id}") {${args}}}`;
+  return post(deleteNote);
+}
+
 function auth(username = '', password = '', args = []) {
   if(args) {
     args = args.join(",");
@@ -60,4 +68,4 @@ function auth(username = '', password = '', args = []) {
   return query(authNote);
 }
 
-export { getNotes, query, addNote, editNote, auth };
+export { getNotes, query, addNote, editNote, deleteNote, auth };

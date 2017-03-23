@@ -24,14 +24,47 @@ class Note extends React.Component {
   }
   render() {
     let note = this.props.notes[this.state.key];
+    
+    const editButton = (note) => {
+      if(this.props.token) {
+        return (<Link to={'/edit/' + (note.id) }>Edit</Link>);
+      }
+    };
+    
+    const deleteButton = (note) => {
+      if(this.props.token) {
+        return (<Link onClick={this.deleteNote}>Delete</Link>);
+      }
+    };
+    
     return (
       <div className="note">
         <h1><strong>{note.title}</strong></h1>
-        <h5><strong>Private:</strong> {(note.private === true) ? 'yes' : 'no'}</h5>
-        <h5><strong>Created:</strong> {(note.createdAt || '')} <strong>Update:</strong> {(note.updatedAt || '')}</h5>
-        <h3>
+        <table>
+          <tr>
+            <td>Private</td>
+            <td>{(note.private === true) ? 'yes' : 'no'}</td>
+          </tr>
+          <tr>
+            <td>URL</td>
+            <td>/note/{(note.id) + ((note.url) ? ('/' + note.url) : '')}</td>
+          </tr>
+          <tr>
+            <td>Created</td>
+            <td>{(note.createdAt || '')}</td>
+          </tr>
+          <tr>
+            <td>Updated</td>
+            <td>{(note.updatedAt || '')}</td>
+          </tr>
+          <tr>
+            <td>Options</td>
+            <td>{editButton(note)} | {deleteButton(note)}</td>
+          </tr>
+        </table>
+        <div className="text">
           {note.text}
-        </h3>
+        </div>
       </div>
     );
   }

@@ -21,7 +21,13 @@ body {
 
 .list li {
   padding: 3px 0;
+  margin: 3px 0;
   list-style-type: circle;
+  border-bottom: 1px solid #fff;
+}
+
+.list li a {
+  text-decoration: none;
 }
 h1,h2,h3,h4,h5,h6 {
   margin: 0;
@@ -54,6 +60,7 @@ form {
 a,
 a:visited {
   color: #fff;
+  cursor: pointer;
 }
 
 form label {
@@ -94,4 +101,27 @@ form .form-element {
   margin: 10px 0;
 }
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+table tr td {
+  padding: 3px;
+  border: 1px solid #fff;
+}
+
+table tr > td:first-child {
+  font-weight:bold;
+}
+
 @import './components/components.less';
+
+.page .note table {
+  margin: 10px 0;
+} 
+.page .note .text {
+  margin: 10px 0;
+}
+.page .note a{
+  text-decoration: underline;
+}
