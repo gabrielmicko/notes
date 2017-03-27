@@ -1,16 +1,17 @@
 const path = require('path');
 const webpack = require('webpack');
-const buildPath = path.resolve(__dirname, 'public', 'js');
+const buildPath = path.resolve(__dirname, 'public');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: ['webpack-dev-server/client?http://0.0.0.0:3000/', 'webpack/hot/only-dev-server', 'react-hot-loader/patch', './src/index'],
+	entry: ['webpack-dev-server/client?http://0.0.0.0:3000/', 'webpack/hot/only-dev-server', 'react-hot-loader/patch', './src/index'],
 	output: {
+		sourceMapFileName: 'js/bundle.js.map', //Filename
 		path: buildPath, //Path where the bundle should be exported
-		filename: 'bundle.js', //Filename
-		sourceMapFileName: 'bundle.map', //Filename
-		publicPath: '/js/' //Where the js gets loaded from
+		filename: 'js/bundle.js', //Filename
+		publicPath: '/' //Where the js gets loaded from
 	},
-	devtool: 'eval',
+	devtool: 'source-map',
 	cache: false,
 	module: {
 		preLoaders: [{
@@ -18,20 +19,22 @@ module.exports = {
 			exclude: /(node_modules)/,
 			loader: 'json'
 		}],
-		loaders: [{
-			test: /\.jsx?$/,
-			loaders: ['babel-loader'],
-			include: path.join(__dirname, 'src'),
-			exclude: /(node_modules|bower_components)/
-		}, {
-			test: /\.less$/,
-			loaders: ['style-loader', 'css-loader', 'less-loader', 'postcss-loader'],
-			include: path.join(__dirname, 'src', 'Less')
-		},
-		{
-			test: /\.(png|jpg|jpeg|svg|woff|woff2|eot|ttf|otf)$/,
-			loader: 'url-loader'
-		}]
+		loaders: [
+			{
+				test: /\.jsx?$/,
+				loaders: ['babel-loader'],
+				include: path.join(__dirname, 'src'),
+				exclude: /(node_modules|bower_components)/
+			}, {
+				test: /\.less$/,
+				loaders: ['style-loader', 'css-loader', 'less-loader', 'postcss-loader'],
+				include: path.join(__dirname, 'src', 'Less')
+			},
+			{
+				test: /\.(png|jpg|jpeg|svg|woff|woff2|eot|ttf|otf)$/,
+				loader: 'url-loader'
+			}
+		]
 	},
 	resolve: {
 		root: path.resolve('./src'),
@@ -42,7 +45,15 @@ module.exports = {
 		new webpack.NoErrorsPlugin(),
 		new webpack.optimize.OccurenceOrderPlugin(),
 		new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('development')
-        })
+			'process.env.NODE_ENV': JSON.stringify('development')
+		}),
+		new HtmlWebpackPlugin({
+			filename: 'index.html',
+			template: 'src/Template/template.html',
+			inject: 'body',
+			hash: true,
+			cache: true,
+			showErrors: false
+		})
 	]
-}
+};

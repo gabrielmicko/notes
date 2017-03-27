@@ -23,9 +23,9 @@ class List extends React.Component {
     return (
       <ul className="list">
         {
-          this.props.notes.map(note => {
+          this.props.notes.map((note, key) => {
             return (
-              <li key={note.id}>
+              <li key={key}>
                 <h3>
                 <Link to={'/note/' + (note.id) + ((note.url) ? ('/' + encodeURIComponent(note.url)) : '')}>{note.title}</Link>
                 </h3>

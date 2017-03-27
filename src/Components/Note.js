@@ -5,7 +5,10 @@ import { getNotes, deleteNote } from '../Helpers/api.js';
 import { updateNote } from '../Actions/notes.js';
 import {browserHistory} from 'react-router';
 import _findIndex from 'lodash/findIndex';
+import {Converter} from 'showdown';
 
+const converter = new Converter();
+console.log(Converter);
 
 class Note extends React.Component {
   constructor(props) {
@@ -33,7 +36,8 @@ class Note extends React.Component {
   }
   
   render() {
-    let note = this.props.notes[this.state.key];
+    let key = parseFloat(_findIndex(this.props.notes, {'id':this.state.id}));
+    let note = this.props.notes[key];
     if(!note) {
       note = {
         id: 0,
@@ -51,14 +55,25 @@ class Note extends React.Component {
       if(this.props.token) {
         return (<Link to={'/edit/' + (note.id) }>Edit</Link>);
       }
+      else {
+        return ("Edit");
+      }
     };
     
     const deleteButton = (note) => {
       if(this.props.token) {
         return (<Link onClick={this.deleteNote}>Delete</Link>);
       }
+      else {
+        return ("Delete");
+      }
+    };
+
+    const createMDText = (text) => {
+      return {__html: converter.makeHtml(text)};
     };
     
+        console.log(note.text);
     return (
       <div className="note">
         <h1><strong>{note.title}</strong></h1>
@@ -86,9 +101,7 @@ class Note extends React.Component {
           </tr>
           </tbody>
         </table>
-        <div className="text">
-          {note.text}
-        </div>
+        <div className="text" dangerouslySetInnerHTML={createMDText(note.text)}></div>
       </div>
     );
   }
@@ -100,6 +113,9 @@ Note.propTypes = {
 
 const mapDispatchToProps = ((dispatch, state) => ({
   getNote: (token, id) => {
+    if(token == false) {
+      token = '';
+    }
     getNotes(token, id, '', ['id', 'url', 'title', 'text', 'private', 'createdAt', 'updatedAt']).then((responseData) => {
       dispatch(updateNote(responseData.data.data.notes, id))
     });

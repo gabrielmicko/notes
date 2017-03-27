@@ -24,7 +24,6 @@ class Edit extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   componentDidMount() {
-    console.log('CUC');
     let id = parseFloat(this.props.params.id);
     let key = parseFloat(_findIndex(this.props.notes, {'id':id}));
     this.props.getNote(this.props.token, id);

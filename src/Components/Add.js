@@ -4,7 +4,7 @@ import { addNote } from '../Helpers/api';
 import { pushNote } from '../Actions/notes';
 
 import {browserHistory} from 'react-router';
-
+console.log(addNote);
 class Insert extends React.Component {
 
   constructor(props) {
@@ -88,6 +88,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => ({
   addNote: (token, url, title, text, pvt) => {
+    console.log('AN');
+    console.log(addNote);
     addNote(token, url, title, text, pvt, ['id', 'url', 'title', 'text', 'private', 'updatedAt', 'createdAt']).then((response) => {
       if(response.data.data.addNote.length > 0) {
         let id = response.data.data.addNote[0].id;

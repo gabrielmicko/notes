@@ -7,7 +7,6 @@ import { AppContainer } from 'react-hot-loader';
 import configureStore from './Store/configureStore';
 import Root from './Containers/Root';
 import CSS from './Less/main.less';
-import testJson from './Json/test.json';
 
 
 const store = configureStore();

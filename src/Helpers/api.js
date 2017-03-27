@@ -5,14 +5,20 @@ function query(query) {
   return axios.get(`${Config.graphQLServer}?query=${query}`);
 }
 
-function post(query) {
-  return axios.post(`${Config.graphQLServer}?query=${query}`);
+function post(query, vars) {
+  var graphQLQuery = {
+    query: query,
+    variables: vars
+  };
+  return axios.post(Config.graphQLServer, JSON.stringify(graphQLQuery), {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
 }
 
 function getNotes(token = '', id = '', title = '', args = []) {
-  console.log('TOKEN');
   if(token) {
-    console.log(token);
     token = `token:"${token}",`;
   }
 
@@ -39,27 +45,49 @@ function getNotes(token = '', id = '', title = '', args = []) {
 }
 
 function addNote(token = '', url = '', title = '', text = '', pvt = '', args = []) {
-  if(args) {
+  try {
+    let addNote = `mutation addNote($token: String!, $url: String!, $title: String!, $text: String!, $pvt: Boolean!) {addNote(token: $token, url:$url, title:$title, text:$text, private:$pvt) {${args}}}`;
+  return post(addNote, {
+    token: token,
+    url: url,
+    title: title,
+    text: text,
+    pvt: pvt
+  });
+  }
+  catch(e) {
+    console.log(e);
+  }
+  if (args) {
     args = args.join(",");
   }
-  let addNote = `mutation addNote {addNote(token: "${token}", url:"${url}", title:"${title}", text:"${text}", private:${pvt}) {${args}}}`;
-  return post(addNote);
+  
 }
 
 function editNote(token = '', id = '', url = '', title = '', text = '', pvt = '', args = []) {
   if(args) {
     args = args.join(",");
   }
-  let editNote = `mutation editNote {editNote(token: "${token}", id:${id}, url:"${url}", title:"${title}", text:"${text}", private:${pvt}){${args}}}`;
-  return post(editNote);
+  let editNote = `mutation editNote($token: String!, $id: Int!, $url: String!, $title: String!, $text: String!, $pvt: Boolean!) {editNote(token: $token, id:$id, url:$url, title:$title, text:$text, private:$pvt){${args}}}`;
+  return post(editNote, {
+    token: token,
+    id: id,
+    url: url,
+    title: title,
+    text: text,
+    pvt: pvt
+  });
 }
 
 function deleteNote(token = '', id = '', args = []) {
   if(args) {
     args = args.join(",");
   }
-  let deleteNote = `mutation deleteNote {deleteNote(token: "${token}", id:${id}) {${args}}}`;
-  return post(deleteNote);
+  let deleteNote = `mutation deleteNote ($token: String!, $id: Int!){deleteNote(token: $token, id:$id) {${args}}}`;
+  return post(deleteNote, {
+    token: token,
+    id, id
+  });
 }
 
 function auth(username = '', password = '', args = []) {
