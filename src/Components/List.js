@@ -14,12 +14,6 @@ class List extends React.Component {
   }
 
   render() {
-    
-    const editButton = (note) => {
-      if(this.props.token) {
-        return (<Link to={'/edit/' + (note.id) }>Edit</Link>);
-      }
-    }
     return (
       <ul className="list">
         {

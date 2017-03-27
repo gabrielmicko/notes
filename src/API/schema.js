@@ -151,13 +151,8 @@ const Query = new GraphQLObjectType({
             });
             
             result.then((users) => {
-              console.log('l');
-            console.log(users);
               if(users.length > 0) {
-                console.log(args.password);
-                console.log(users[0].password);
                 var comparePw = bcrypt.compareSync(args.password, users[0].password);
-                console.log(comparePw);
                 if(comparePw) {
                   users[0].token = login(users[0].username);
                   resolve(users);

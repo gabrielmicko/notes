@@ -1,9 +1,6 @@
 import jwt from 'jsonwebtoken';
 import Config from '../Config/config.json'
-import axios from 'axios';
-
 const secret = Config.tokenSecret;
-const date = Math.floor(Date.now() / 1000) + (60 * 60)
 
 function login(user) {
     return jwt.sign({

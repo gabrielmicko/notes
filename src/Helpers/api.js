@@ -45,23 +45,17 @@ function getNotes(token = '', id = '', title = '', args = []) {
 }
 
 function addNote(token = '', url = '', title = '', text = '', pvt = '', args = []) {
-  try {
+    if (args) {
+      args = args.join(",");
+    }
     let addNote = `mutation addNote($token: String!, $url: String!, $title: String!, $text: String!, $pvt: Boolean!) {addNote(token: $token, url:$url, title:$title, text:$text, private:$pvt) {${args}}}`;
-  return post(addNote, {
-    token: token,
-    url: url,
-    title: title,
-    text: text,
-    pvt: pvt
-  });
-  }
-  catch(e) {
-    console.log(e);
-  }
-  if (args) {
-    args = args.join(",");
-  }
-  
+    return post(addNote, {
+      token: token,
+      url: url,
+      title: title,
+      text: text,
+      pvt: pvt
+    });
 }
 
 function editNote(token = '', id = '', url = '', title = '', text = '', pvt = '', args = []) {
@@ -86,7 +80,7 @@ function deleteNote(token = '', id = '', args = []) {
   let deleteNote = `mutation deleteNote ($token: String!, $id: Int!){deleteNote(token: $token, id:$id) {${args}}}`;
   return post(deleteNote, {
     token: token,
-    id, id
+    id: id
   });
 }
 

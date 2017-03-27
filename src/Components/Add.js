@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { addNote } from '../Helpers/api';
 import { pushNote } from '../Actions/notes';
-
 import {browserHistory} from 'react-router';
-console.log(addNote);
+
+
 class Insert extends React.Component {
 
   constructor(props) {
@@ -19,9 +19,6 @@ class Insert extends React.Component {
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-  }
-  componentDidMount() {
-    console.log(this.props);
   }
 
   handleSubmit(event) {
@@ -88,8 +85,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => ({
   addNote: (token, url, title, text, pvt) => {
-    console.log('AN');
-    console.log(addNote);
     addNote(token, url, title, text, pvt, ['id', 'url', 'title', 'text', 'private', 'updatedAt', 'createdAt']).then((response) => {
       if(response.data.data.addNote.length > 0) {
         let id = response.data.data.addNote[0].id;

@@ -8,7 +8,6 @@ import _findIndex from 'lodash/findIndex';
 import {Converter} from 'showdown';
 
 const converter = new Converter();
-console.log(Converter);
 
 class Note extends React.Component {
   constructor(props) {
@@ -72,8 +71,6 @@ class Note extends React.Component {
     const createMDText = (text) => {
       return {__html: converter.makeHtml(text)};
     };
-    
-        console.log(note.text);
     return (
       <div className="note">
         <h1><strong>{note.title}</strong></h1>
