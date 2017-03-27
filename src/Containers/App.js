@@ -1,8 +1,9 @@
-import Menu from '../Components/Menu';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { login } from '../Actions/login';
 import DocumentTitle  from 'react-document-title';
+import List from '../Components/List';
+
 
 class App extends React.Component {
   componentDidMount() {
@@ -11,11 +12,13 @@ class App extends React.Component {
   render() {
     return (
        <DocumentTitle title='Notes'>
-        <div className="page">
-          <h1>Notes</h1>
-          <Menu />
-          { this.props.children }
-        </div>
+         <div className="page container">
+           <div className="site menu">
+             <List />
+           </div>
+           <div className="site content">Repa</div>
+           <div className="site access">Mogyoro</div>
+         </div>
       </DocumentTitle>
     );
   }

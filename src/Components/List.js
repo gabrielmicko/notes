@@ -14,20 +14,32 @@ class List extends React.Component {
   }
 
   render() {
+    const isPrivate = function(isPrivate) {
+      if(isPrivate) {
+        return (<i className="fa fa-lock"></i>)
+      }
+      else {
+        return (<i className="fa fa-unlock-alt"></i>)
+      }
+    };
     return (
-      <ul className="list">
-        {
-          this.props.notes.map((note, key) => {
-            return (
-              <li key={key}>
-                <h3>
-                <Link to={'/note/' + (note.id) + ((note.url) ? ('/' + encodeURIComponent(note.url)) : '')}>{note.title}</Link>
-                </h3>
-              </li>
-            )
-          })
-        }
-      </ul>
+        <div className="option-holder">
+          <div className="note-list-holder">
+            <ul className="note-list">
+              {
+                this.props.notes.map((note, key) => {
+                  return (
+                    <li key={key}>
+                      <Link to={'/note/' + (note.id) + ((note.url) ? ('/' + encodeURIComponent(note.url)) : '')}>{note.title}</Link>
+                      <div className="info"><i className="fa fa-clock-o"></i> {note.updatedAt}, {isPrivate(note.private)}</div>
+                      
+                    </li>
+                  )
+                })
+              }
+            </ul>
+          </div>
+        </div>
     );
   }
 }
