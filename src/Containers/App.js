@@ -4,6 +4,7 @@ import { login } from '../Actions/login';
 import DocumentTitle  from 'react-document-title';
 import List from '../Components/List';
 import Editor from '../Components/Editor';
+import Options from '../Components/Options';
 
 
 class App extends React.Component {
@@ -20,7 +21,9 @@ class App extends React.Component {
            <div className="site content">
              <Editor />
            </div>
-           <div className="site access">Mogyoro</div>
+           <div className="site access">
+             <Options/>
+           </div>
          </div>
       </DocumentTitle>
     );

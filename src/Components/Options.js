@@ -8,25 +8,26 @@ import _findIndex from 'lodash/findIndex';
 import {browserHistory} from 'react-router';
 */
 
-class Editor extends React.Component {
+class Options extends React.Component {
 
  
   render() {
     return (
-      <div className="ceh">
-        <div className="content page fake-1"></div>
-        <div className="content page fake-2"></div>
-        <div className="content page real">
-	        <header>
-		        {/*<input>*/}
-	        </header>
-        </div>
-      </div>
+    	<div>
+		    <nav>
+		      <div className="option-list">
+			      <ul>
+				      <li><i className="fa fa-lock"></i></li>
+				      <li><i className="fa fa-floppy-o"></i></li>
+			      </ul>
+		      </div>
+	      </nav>
+	    </div>
     );
   }
 }
 
-Editor.propTypes = {
+Options.propTypes = {
 
 };
 
@@ -41,4 +42,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
     mapStateToProps,
     mapDispatchToProps,
-)(Editor);
+)(Options);
