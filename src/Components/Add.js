@@ -1,21 +1,19 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { addNote } from '../Helpers/api';
 import { pushNote } from '../Actions/notes';
-import {browserHistory} from 'react-router';
-
+import { browserHistory } from 'react-router';
 
 class Insert extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      'form_url': '',
-      'form_title': '',
-      'form_text': '',
-      'form_private': false
+      form_url: '',
+      form_title: '',
+      form_text: '',
+      form_private: false
     };
-
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -34,7 +32,9 @@ class Insert extends React.Component {
 
   handleInputChange(event) {
     const target = event.target;
-    const value = target.type === 'checkbox' ? (target.checked || false) : target.value;
+    const value = target.type === 'checkbox'
+      ? target.checked || false
+      : target.value;
     const name = target.name;
 
     this.setState({
@@ -49,19 +49,40 @@ class Insert extends React.Component {
         <form className="form" onSubmit={this.handleSubmit}>
           <div className="form-element">
             <label>URL</label>
-            <input name="url" value={this.state.form_url} onChange={this.handleInputChange} type="text" />
+            <input
+              name="url"
+              value={this.state.form_url}
+              onChange={this.handleInputChange}
+              type="text"
+            />
           </div>
           <div className="form-element">
             <label>Title</label>
-            <input required="required" name="title" value={this.state.form_title} onChange={this.handleInputChange} type="text" />
+            <input
+              required="required"
+              name="title"
+              value={this.state.form_title}
+              onChange={this.handleInputChange}
+              type="text"
+            />
           </div>
           <div className="form-element">
             <label>Note</label>
-            <textarea required="required" name="text" value={this.state.form_text} onChange={this.handleInputChange} />
+            <textarea
+              required="required"
+              name="text"
+              value={this.state.form_text}
+              onChange={this.handleInputChange}
+            />
           </div>
           <div className="form-element">
             <label>Private</label>
-            <input type="checkbox" checked={this.state.form_private} name="private" onChange={this.handleInputChange} />
+            <input
+              type="checkbox"
+              checked={this.state.form_private}
+              name="private"
+              onChange={this.handleInputChange}
+            />
           </div>
           <div>
             <button type="submit">Save</button>
@@ -76,33 +97,36 @@ Insert.propTypes = {
   addNote: PropTypes.func.isRequired
 };
 
-
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    'token': state.token
-  }
-}
+    token: state.token
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   addNote: (token, url, title, text, pvt) => {
-    addNote(token, url, title, text, pvt, ['id', 'url', 'title', 'text', 'private', 'updatedAt', 'createdAt']).then((response) => {
-      if(response.data.data.addNote.length > 0) {
+    addNote(token, url, title, text, pvt, [
+      'id',
+      'url',
+      'title',
+      'text',
+      'private',
+      'updatedAt',
+      'createdAt'
+    ]).then(response => {
+      if (response.data.data.addNote.length > 0) {
         let id = response.data.data.addNote[0].id;
         let url = response.data.data.addNote[0].url;
-        if(url) {
+        if (url) {
           url = '/' + url;
         }
         dispatch(pushNote(response.data.data.addNote));
         browserHistory.push('/note/' + id + url);
-      }
-      else {
+      } else {
         alert('Save failed');
       }
     });
   }
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Insert);
+export default connect(mapStateToProps, mapDispatchToProps)(Insert);

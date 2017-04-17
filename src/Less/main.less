@@ -1,14 +1,15 @@
 @import "normalize.less";
 @import "font-awesome.less";
 @import "raleway-webfont.less";
+@import "grace.less";
 
 html, body {
   height: 100%;
 }
 body {
   background-image: url('/img/wood_bg.jpg');
-  background-size: auto 100%;
-  background-position: center center;
+  background-position: top center;
+  background-repeat: no-repeat;
   font-family: 'Raleway Webfont', sans-serif;
 }
 h1,h2,h3,h4,h5,h6 {
@@ -38,7 +39,13 @@ h5 {
 form {
 
 }
-
+input,
+select,
+textarea,
+button {
+  outline: 0;
+  outline-width: 0;
+}
 a,
 a:visited {
   text-decoration: none;
@@ -46,6 +53,7 @@ a:visited {
 }
 
 .page.container {
+  max-width: 1200px;
   padding: 100px 50px;
   display: flex;
   flex-direction: row;
@@ -54,13 +62,13 @@ a:visited {
 
 .site.menu {
   order: 1;
-  flex-basis: 20%;
-  max-width: 20%;
+  flex-basis: 25%;
+  max-width: 25%;
 }
 .site.content {
   order: 2;
   flex-grow: 2;
-  
+
   flex-basis: 50%;
   max-width: 50%;
 }
@@ -68,6 +76,7 @@ a:visited {
   order: 3;
   flex-basis: 20%;
   max-width: 20%;
+  padding-left: 50px;
 }
 
 @import "./components/SiteMenu.less";
