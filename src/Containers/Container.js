@@ -11,10 +11,7 @@ class Container extends React.Component {
   }
   componentDidMount() {}
 
-  componentWillReceiveProps(newProps) {
-    console.log('__');
-    console.log(newProps);
-  }
+  componentWillReceiveProps(newProps) {}
 
   render() {
     return (
@@ -43,12 +40,9 @@ Container.propTypes = {};
 
 const mapDispatchToProps = (dispatch, state) => ({});
 
-export default connect(
-  state => {
-    return {
-      notes: state.notes,
-      token: state.token
-    };
-  },
-  mapDispatchToProps
-)(Container);
+export default connect(state => {
+  return {
+    notes: state.notes,
+    token: state.token
+  };
+}, mapDispatchToProps)(Container);

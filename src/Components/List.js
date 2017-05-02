@@ -42,34 +42,45 @@ class List extends React.Component {
         return '';
       }
     };
+    let notDeletedNotes = 0;
+    const noteList = this.props.notes.map((note, key) => {
+      if (note.deleted) return;
+      ++notDeletedNotes;
+      return (
+        <li key={key} className={isPrivateClass(note.private)}>
+          <Link
+            to={
+              '/note/' +
+                note.id +
+                (note.url ? '/' + encodeURIComponent(note.url) : '')
+            }
+          >
+            {note.title}
+          </Link>
+          <div className="info">
+            <i className="fa fa-clock-o" />
+            {' '}
+            {note.updatedAt}
+            {', '}
+            {isPrivate(note.private)}
+          </div>
+        </li>
+      );
+    });
+
+    const noList = (
+      <div className="nothing-here">There is nothing here yet.</div>
+    );
+    console.log(notDeletedNotes);
+    console.log(this.props.notes.length);
+    const listItem = notDeletedNotes === 0
+      ? noList
+      : <ul className="note-list">{noteList}</ul>;
 
     return (
       <div className="option-holder">
         <div className="note-list-holder">
-          <ul className="note-list">
-            {this.props.notes.map((note, key) => {
-              return (
-                <li key={key} className={isPrivateClass(note.private)}>
-                  <Link
-                    to={
-                      '/note/' +
-                        note.id +
-                        (note.url ? '/' + encodeURIComponent(note.url) : '')
-                    }
-                  >
-                    {note.title}
-                  </Link>
-                  <div className="info">
-                    <i className="fa fa-clock-o" />
-                    {' '}
-                    {note.updatedAt}
-                    {', '}
-                    {isPrivate(note.private)}
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+          {listItem}
         </div>
       </div>
     );
@@ -99,12 +110,9 @@ const mapDispatchToProps = (dispatch, state) => ({
   }
 });
 
-export default connect(
-  state => {
-    return {
-      notes: state.notes,
-      token: state.token
-    };
-  },
-  mapDispatchToProps
-)(List);
+export default connect(state => {
+  return {
+    notes: state.notes,
+    token: state.token
+  };
+}, mapDispatchToProps)(List);

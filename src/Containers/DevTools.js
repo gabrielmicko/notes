@@ -20,7 +20,7 @@ const DevTools = createDevTools(
     defaultPosition="right"
     toggleVisibilityKey="ctrl-h"
     changePositionKey="ctrl-q"
-    defaultIsVisible={true}
+    defaultIsVisible={false}
     changeMonitorKey="ctrl-e"
   >
     <LogMonitor theme="tomorrow" />

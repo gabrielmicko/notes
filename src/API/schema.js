@@ -16,85 +16,85 @@ import { encrypt, decrypt } from './encrypt';
 const Notes = new GraphQLObjectType({
   name: 'Notes',
   description: 'This is the Notes table handler.',
-    fields: () => {
-      return {
-        id: {
-          type: GraphQLInt,
-          resolve(note) {
-            return note.id;
-          },
-        },
-        url: {
-          type: GraphQLString,
-          resolve(note) {
-            return decrypt(note.url);
-          },
-        },
-        title: {
-          type: GraphQLString,
-          resolve(note) {
-            return decrypt(note.title);
-          },
-        },
-        text: {
-          type: GraphQLString,
-          resolve(note) {
-            return decrypt(note.text);
-          },
-        },
-        private: {
-          type: GraphQLBoolean,
-          resolve(note) {
-            return note.private;
-          },
-        },
-        deleted: {
-          type: GraphQLBoolean,
-          resolve(note) {
-            return note.deleted;
-          },
-        },
-        createdAt: {
-          type: GraphQLString,
-          resolve(note) {
-            return moment(note.createdAt).format('MMMM Do YYYY, h:mm:ss a');
-          },
-        },
-        updatedAt: {
-          type: GraphQLString,
-          resolve(note) {
-            return moment(note.updatedAt).format('MMMM Do YYYY, h:mm:ss a');
-          },
-        },
-      };
-    },
+  fields: () => {
+    return {
+      id: {
+        type: GraphQLInt,
+        resolve(note) {
+          return note.id;
+        }
+      },
+      url: {
+        type: GraphQLString,
+        resolve(note) {
+          return decrypt(note.url);
+        }
+      },
+      title: {
+        type: GraphQLString,
+        resolve(note) {
+          return decrypt(note.title);
+        }
+      },
+      text: {
+        type: GraphQLString,
+        resolve(note) {
+          return decrypt(note.text);
+        }
+      },
+      private: {
+        type: GraphQLBoolean,
+        resolve(note) {
+          return note.private;
+        }
+      },
+      deleted: {
+        type: GraphQLBoolean,
+        resolve(note) {
+          return note.deleted;
+        }
+      },
+      createdAt: {
+        type: GraphQLString,
+        resolve(note) {
+          return moment(note.createdAt).format('MMMM Do YYYY, h:mm:ss a');
+        }
+      },
+      updatedAt: {
+        type: GraphQLString,
+        resolve(note) {
+          return moment(note.updatedAt).format('MMMM Do YYYY, h:mm:ss a');
+        }
+      }
+    };
+  }
 });
 
 const Users = new GraphQLObjectType({
   name: 'Users',
   description: 'This is the Users table handler.',
-    fields: () => {
-      return {
-        id: {
-          type: GraphQLInt,
-          resolve(user) {
-            return user.id;
-          },
-        },
-        username: {
-          type: GraphQLString,
-          resolve(user) {
-            return user.username;
-          },
-        },
-        token: {
-          type: GraphQLString,
-          resolve(user) {
-            return user.token || false;
-          },
-        },
-      };
-    },
+  fields: () => {
+    return {
+      id: {
+        type: GraphQLInt,
+        resolve(user) {
+          return user.id;
+        }
+      },
+      username: {
+        type: GraphQLString,
+        resolve(user) {
+          return user.username;
+        }
+      },
+      token: {
+        type: GraphQLString,
+        resolve(user) {
+          return user.token || false;
+        }
+      }
+    };
+  }
 });
 
 const Query = new GraphQLObjectType({
@@ -113,19 +113,19 @@ const Query = new GraphQLObjectType({
           },
           title: {
             type: GraphQLString
-          },
+          }
         },
         resolve(root, args) {
           args.private = false;
-          if(args.token && isToken(args.token)) {
+          if (args.token && isToken(args.token)) {
             delete args.private;
           }
 
-          if(args.token) {
+          if (args.token) {
             delete args.token;
           }
           args.deleted = false;
-          
+
           return Db.models.notes.findAll({
             where: args
           });
@@ -142,18 +142,21 @@ const Query = new GraphQLObjectType({
           }
         },
         resolve(root, args) {
-          return new Promise((resolve) => {
+          return new Promise(resolve => {
             let result = Db.models.users.findAll({
               where: {
-                username: args.username,
+                username: args.username
               },
               raw: true
             });
-            
-            result.then((users) => {
-              if(users.length > 0) {
-                var comparePw = bcrypt.compareSync(args.password, users[0].password);
-                if(comparePw) {
+
+            result.then(users => {
+              if (users.length > 0) {
+                var comparePw = bcrypt.compareSync(
+                  args.password,
+                  users[0].password
+                );
+                if (comparePw) {
                   users[0].token = login(users[0].username);
                   resolve(users);
                 }
@@ -162,11 +165,10 @@ const Query = new GraphQLObjectType({
             });
           });
         }
-      },
-    }
-  },
+      }
+    };
+  }
 });
-
 
 const Mutation = new GraphQLObjectType({
   name: 'Mutations',
@@ -174,157 +176,158 @@ const Mutation = new GraphQLObjectType({
   fields() {
     return {
       addNote: {
-          type: new GraphQLList(Notes),
-          args: {
-            token: {
-              type: new GraphQLNonNull(GraphQLString)
-            },
-            url: {
-              type: new GraphQLNonNull(GraphQLString)
-            },
-            title: {
-              type: new GraphQLNonNull(GraphQLString)
-            },
-            text: {
-              type: new GraphQLNonNull(GraphQLString)
-            },
-            private: {
-              type: new GraphQLNonNull(GraphQLBoolean)
-            },
+        type: new GraphQLList(Notes),
+        args: {
+          token: {
+            type: new GraphQLNonNull(GraphQLString)
           },
+          url: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          title: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          text: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          private: {
+            type: new GraphQLNonNull(GraphQLBoolean)
+          }
+        },
         resolve(root, args) {
-            if(args.token && isToken(args.token)) {
-              return new Promise((resolve) => {
-                var createNote =Db.models.notes.create({
+          if (args.token && isToken(args.token)) {
+            return new Promise(resolve => {
+              var createNote = Db.models.notes.create(
+                {
                   url: encrypt(args.url),
                   title: encrypt(args.title),
                   text: encrypt(args.text),
                   private: args.private
-                }, {
+                },
+                {
                   raw: true
-                });
-                createNote.then((newNote) => {
-                  resolve(Db.models.notes.findAll({
+                }
+              );
+              createNote.then(newNote => {
+                resolve(
+                  Db.models.notes.findAll({
                     where: {
                       id: newNote.id,
                       deleted: false
                     }
-                  }))
-                });
+                  })
+                );
               });
-            }
-            else {
-              return [];
-            }
+            });
+          } else {
+            return [];
+          }
         }
       },
       editNote: {
-          type: new GraphQLList(Notes),
-          args: {
-            token: {
-              type: new GraphQLNonNull(GraphQLString)
-            },
-            id: {
-              type: new GraphQLNonNull(GraphQLInt)
-            },
-            url: {
-              type: new GraphQLNonNull(GraphQLString),
-            },
-            title: {
-              type: new GraphQLNonNull(GraphQLString),
-            },
-            text: {
-              type: new GraphQLNonNull(GraphQLString),
-            },
-            private: {
-              type: GraphQLBoolean
-            },
+        type: new GraphQLList(Notes),
+        args: {
+          token: {
+            type: new GraphQLNonNull(GraphQLString)
           },
+          id: {
+            type: new GraphQLNonNull(GraphQLInt)
+          },
+          url: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          title: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          text: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          private: {
+            type: GraphQLBoolean
+          }
+        },
         resolve(root, args) {
-            if(args.token && isToken(args.token)) {
-              return new Promise((resolve) => {
-                delete args.token;
-                if(args.url) {
-                  args.url = encrypt(args.url);
+          if (args.token && isToken(args.token)) {
+            return new Promise(resolve => {
+              delete args.token;
+              if (args.url) {
+                args.url = encrypt(args.url);
+              }
+              if (args.title) {
+                args.title = encrypt(args.title);
+              }
+              if (args.text) {
+                args.text = encrypt(args.text);
+              }
+              var updateNote = Db.models.notes.update(args, {
+                where: {
+                  id: args.id,
+                  deleted: false
                 }
-                if(args.title) {
-                  args.title = encrypt(args.title);
-                }
-                if(args.text) {
-                  args.text = encrypt(args.text);
-                }
-                var updateNote = Db.models.notes.update(
-                  args,
-                  {
-                    where: {
-                      id: args.id,
-                      deleted: false
-                    }
-                  }
-                );
-                
-                updateNote.then(() => {
-                  resolve(Db.models.notes.findAll({
+              });
+
+              updateNote.then(() => {
+                resolve(
+                  Db.models.notes.findAll({
                     where: {
                       id: args.id
                     }
-                  }))
-                });
-                
+                  })
+                );
               });
-            }
-            else {
-              return [];
-            }
+            });
+          } else {
+            return [];
+          }
         }
       },
       deleteNote: {
-          type: new GraphQLList(Notes),
-          args: {
-            token: {
-              type: new GraphQLNonNull(GraphQLString)
-            },
-            id: {
-              type: new GraphQLNonNull(GraphQLInt)
-            },
+        type: new GraphQLList(Notes),
+        args: {
+          token: {
+            type: new GraphQLNonNull(GraphQLString)
           },
+          id: {
+            type: new GraphQLNonNull(GraphQLInt)
+          }
+        },
         resolve(root, args) {
-            if(args.token && isToken(args.token)) {
-              return new Promise((resolve) => {
-                delete args.token;
-                var updateNote = Db.models.notes.update(
-                  {
-                    deleted: true
-                  },
-                  {
-                    where: {
-                      id: args.id
-                    }
+          if (args.token && isToken(args.token)) {
+            return new Promise(resolve => {
+              delete args.token;
+              var updateNote = Db.models.notes.update(
+                {
+                  deleted: true
+                },
+                {
+                  where: {
+                    id: args.id
                   }
-                );
-                
-                updateNote.then(() => {
-                  resolve(Db.models.notes.findAll({
+                }
+              );
+
+              updateNote.then(() => {
+                resolve(
+                  Db.models.notes.findAll({
                     where: {
                       id: args.id
                     }
-                  }))
-                });
-                
+                  })
+                );
               });
-            }
-            else {
-              return [];
-            }
+            });
+          } else {
+            return [];
+          }
         }
       }
-    }
+    };
   }
-})
+});
 
 const Schema = new GraphQLSchema({
   query: Query,
-  mutation: Mutation,
+  mutation: Mutation
 });
 
 export default Schema;

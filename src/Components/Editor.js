@@ -17,8 +17,6 @@ class Editor extends React.Component {
   }
   componentDidMount() {}
   componentWillReceiveProps(newProps) {
-    console.log('A');
-    console.log(newProps);
     if (newProps.notes.length > 0) {
       let note = newProps.notes[0];
       if (newProps.params.id) {
@@ -34,7 +32,6 @@ class Editor extends React.Component {
         });
       }
     }
-    console.log(newProps);
   }
   handleInputChange(event) {
     const target = event.target;
@@ -48,7 +45,6 @@ class Editor extends React.Component {
     this.props.updateNoteByPropertyHandler(this.state.id, name, value);
   }
   render() {
-    console.log(this.props);
     return (
       <div className="ceh">
         <div className="content page fake-1" />

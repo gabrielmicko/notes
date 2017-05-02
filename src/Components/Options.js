@@ -4,8 +4,15 @@ import { connect } from 'react-redux';
 import Login from './Login';
 import _find from 'lodash/find';
 import { updateNoteByProperty } from '../Actions/notes.js';
+import { addLog } from '../Actions/settings.js';
 import slugify from '../Helpers/slugify.js';
-import { pushNote, removeNote } from '../Actions/notes';
+import {
+  pushNote,
+  removeNote,
+  setNotes,
+  setMasterNotes
+} from '../Actions/notes';
+import { getNotes, saveNotes } from '../Helpers/api.js';
 /*
 import { pushNote } from '../Actions/notes';
 import { getNotes, editNote } from '../Helpers/api.js';
@@ -28,6 +35,7 @@ class Options extends React.Component {
     this.handlePrivateChange = this.handlePrivateChange.bind(this);
     this.addNote = this.addNote.bind(this);
     this.deleteNote = this.deleteNote.bind(this);
+    this.saveNotes = this.saveNotes.bind(this);
   }
   componentWillReceiveProps(newProps, nextProps) {
     if (newProps.notes.length > 0) {
@@ -46,7 +54,6 @@ class Options extends React.Component {
         });
       }
     }
-    console.log(newProps);
   }
   slugifyURL() {
     if (!this.props.token) {
@@ -88,7 +95,6 @@ class Options extends React.Component {
       alert('Please log in.');
       return false;
     }
-    console.log('DELEtE');
     this.props.removeNote(this.state.id);
   }
 
@@ -121,6 +127,14 @@ class Options extends React.Component {
     });
   }
 
+  saveNotes() {
+    this.props.saveNotes(
+      this.props.token,
+      this.props.notes,
+      this.props.masternotes
+    );
+  }
+
   render() {
     const lockBtn = !this.state.private
       ? <li>
@@ -137,6 +151,22 @@ class Options extends React.Component {
             onClick={() => this.handlePrivateChange(false)}
           />
         </li>;
+
+    const log = () => {
+      if (this.props.log.length > 0) {
+        return (
+          <div className="box log">
+            <h3 className="options">Log</h3>
+            <ul>
+              {this.props.log.map((log, key) => {
+                return <li key={key}>{log}</li>;
+              })}
+            </ul>
+          </div>
+        );
+      }
+    };
+
     return (
       <div>
         <Login />
@@ -159,7 +189,13 @@ class Options extends React.Component {
                   onClick={this.addNote}
                 />
               </li>
-              <li><i className="fa fa-floppy-o" title="Save changes" /></li>
+              <li>
+                <i
+                  onClick={this.saveNotes}
+                  className="fa fa-floppy-o"
+                  title="Save changes"
+                />
+              </li>
             </ul>
           </div>
         </nav>
@@ -183,6 +219,8 @@ class Options extends React.Component {
             </label>
           </form>
         </div>
+        {log()}
+
       </div>
     );
   }
@@ -191,17 +229,20 @@ class Options extends React.Component {
 Options.propTypes = {
   updateNoteByPropertyHandler: PropTypes.func.isRequired,
   addNote: PropTypes.func.isRequired,
-  removeNote: PropTypes.func.isRequired
+  removeNote: PropTypes.func.isRequired,
+  saveNotes: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => {
   return {
     token: state.token,
-    notes: state.notes
+    notes: state.notes,
+    masternotes: state.masternotes,
+    log: state.settings.log
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     updateNoteByPropertyHandler: (id, property, value) => {
       dispatch(updateNoteByProperty(id, property, value));
@@ -210,7 +251,61 @@ const mapDispatchToProps = dispatch => {
       dispatch(pushNote(note));
     },
     removeNote: id => {
-      dispatch(removeNote(id));
+      dispatch(updateNoteByProperty(id, 'deleted', true));
+    },
+    saveNotes: (token, notes, masternotes) => {
+      saveNotes(token, notes, masternotes).then(function(results) {
+        let authError = false;
+        results.forEach(result => {
+          let resultObject = false;
+          let method = '';
+          if (result.data.data.editNote) {
+            resultObject = result.data.data.editNote[0];
+            method = 'Note has been saved';
+          }
+          if (result.data.data.addNote) {
+            resultObject = result.data.data.addNote[0];
+            method = 'Note has been added';
+          }
+          if (result.data.data.deleteNote) {
+            resultObject = result.data.data.deleteNote[0];
+            method = 'Note has been deleted';
+          }
+          if (resultObject && resultObject.id) {
+            method += ' (' + resultObject.id + ').';
+          }
+          if (
+            !resultObject ||
+            (resultObject.length && resultObject.id === null)
+          ) {
+            authError = true;
+          } else {
+            dispatch(addLog(method));
+          }
+        });
+
+        if (results.length) {
+          if (authError === false) {
+            getNotes(token, '', '', [
+              'id',
+              'url',
+              'title',
+              'text',
+              'private',
+              'deleted',
+              'createdAt',
+              'updatedAt'
+            ]).then(responseData => {
+              dispatch(setNotes(responseData.data.data.notes));
+              dispatch(setMasterNotes(responseData.data.data.notes));
+            });
+          } else {
+            dispatch(addLog('The token has expired.'));
+          }
+        } else {
+          dispatch(addLog('Nothing to save.'));
+        }
+      });
     }
   };
 };

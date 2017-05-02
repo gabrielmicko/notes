@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Config from '../Config/config.json';
+import _findIndex from 'lodash/findIndex';
 
 function query(query) {
   return axios.get(`${Config.graphQLServer}?query=${query}`);
@@ -18,24 +19,24 @@ function post(query, vars) {
 }
 
 function getNotes(token = '', id = '', title = '', args = []) {
-  if(token) {
+  if (token) {
     token = `token:"${token}",`;
   }
 
-  if(id) {
+  if (id) {
     id = `id:${id},`;
   }
 
-  if(title) {
+  if (title) {
     title = `title:"${title}",`;
   }
 
-  if(args) {
-    args = args.join(",");
+  if (args) {
+    args = args.join(',');
   }
 
   let params = '';
-  if(token || id || title)  {
+  if (token || id || title) {
     params = `(${token}${id}${title})`;
   }
 
@@ -44,23 +45,38 @@ function getNotes(token = '', id = '', title = '', args = []) {
   return query(queryString);
 }
 
-function addNote(token = '', url = '', title = '', text = '', pvt = '', args = []) {
-    if (args) {
-      args = args.join(",");
-    }
-    let addNote = `mutation addNote($token: String!, $url: String!, $title: String!, $text: String!, $pvt: Boolean!) {addNote(token: $token, url:$url, title:$title, text:$text, private:$pvt) {${args}}}`;
-    return post(addNote, {
-      token: token,
-      url: url,
-      title: title,
-      text: text,
-      pvt: pvt
-    });
+function addNote(
+  token = '',
+  url = '',
+  title = '',
+  text = '',
+  pvt = '',
+  args = []
+) {
+  if (args) {
+    args = args.join(',');
+  }
+  let addNote = `mutation addNote($token: String!, $url: String!, $title: String!, $text: String!, $pvt: Boolean!) {addNote(token: $token, url:$url, title:$title, text:$text, private:$pvt) {${args}}}`;
+  return post(addNote, {
+    token: token,
+    url: url,
+    title: title,
+    text: text,
+    pvt: pvt
+  });
 }
 
-function editNote(token = '', id = '', url = '', title = '', text = '', pvt = '', args = []) {
-  if(args) {
-    args = args.join(",");
+function editNote(
+  token = '',
+  id = '',
+  url = '',
+  title = '',
+  text = '',
+  pvt = '',
+  args = []
+) {
+  if (args) {
+    args = args.join(',');
   }
   let editNote = `mutation editNote($token: String!, $id: Int!, $url: String!, $title: String!, $text: String!, $pvt: Boolean!) {editNote(token: $token, id:$id, url:$url, title:$title, text:$text, private:$pvt){${args}}}`;
   return post(editNote, {
@@ -74,8 +90,8 @@ function editNote(token = '', id = '', url = '', title = '', text = '', pvt = ''
 }
 
 function deleteNote(token = '', id = '', args = []) {
-  if(args) {
-    args = args.join(",");
+  if (args) {
+    args = args.join(',');
   }
   let deleteNote = `mutation deleteNote ($token: String!, $id: Int!){deleteNote(token: $token, id:$id) {${args}}}`;
   return post(deleteNote, {
@@ -85,11 +101,68 @@ function deleteNote(token = '', id = '', args = []) {
 }
 
 function auth(username = '', password = '', args = []) {
-  if(args) {
-    args = args.join(",");
+  if (args) {
+    args = args.join(',');
   }
   let authNote = `{auth(username: "${username}", password: "${password}") {${args}}}`;
   return query(authNote);
 }
 
-export { getNotes, query, addNote, editNote, deleteNote, auth };
+function saveNotes(token, notes, masternotes) {
+  var actionPromises = [];
+  var notes = [...notes];
+  function popNote(id) {
+    let index = _findIndex(notes, function(note) {
+      return note.id == id;
+    });
+    if (index !== -1) {
+      return notes.splice(index, 1);
+    } else {
+      return false;
+    }
+  }
+
+  if (masternotes.length > 0) {
+    masternotes.forEach(function(note) {
+      let poppedNote = popNote(note.id);
+      if (poppedNote) {
+        if (poppedNote[0].deleted === true) {
+          console.log('~Deleted');
+          actionPromises.push(deleteNote(token, poppedNote[0].id, ['id']));
+        } else if (
+          note.url !== poppedNote[0].url ||
+          note.title !== poppedNote[0].title ||
+          note.text !== poppedNote[0].text ||
+          note.private !== poppedNote[0].private
+        ) {
+          console.log('~Update');
+          actionPromises.push(
+            editNote(
+              token,
+              poppedNote[0].id,
+              poppedNote[0].url,
+              poppedNote[0].title,
+              poppedNote[0].text,
+              poppedNote[0].private,
+              ['id']
+            )
+          );
+        }
+      }
+    });
+  }
+  if (notes.length > 0) {
+    //Hozzáadás
+    notes.forEach(function(note) {
+      if (note.deleted === false) {
+        console.log('~Add');
+        actionPromises.push(
+          addNote(token, note.url, note.title, note.text, note.private, ['id'])
+        );
+      }
+    });
+  }
+  return Promise.all(actionPromises);
+}
+
+export { getNotes, query, addNote, editNote, deleteNote, auth, saveNotes };
