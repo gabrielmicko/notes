@@ -58,20 +58,22 @@ const Users = Conn.define('users', {
 });
 
 Conn.sync({
-  force: true
+  force: Config.forceRewriteDB
 }).then(() => {
   Users.create({
     username: Config.username,
     password: bcrypt.hashSync(Config.password, 10)
   });
-  _.times(10, () => {
-    return Notes.create({
-      url: encrypt(Faker.lorem.word()),
-      title: encrypt(Faker.lorem.sentence()),
-      text: encrypt(Faker.lorem.text()),
-      private: Faker.random.boolean()
+  if (Config.exampleData) {
+    _.times(10, () => {
+      return Notes.create({
+        url: encrypt(Faker.lorem.word()),
+        title: encrypt(Faker.lorem.sentence()),
+        text: encrypt(Faker.lorem.text()),
+        private: Faker.random.boolean()
+      });
     });
-  });
+  }
 });
 
 export default Conn;
