@@ -61,8 +61,8 @@ Conn.sync({
   force: Config.forceRewriteDB
 }).then(() => {
   Users.create({
-    username: Config.username,
-    password: bcrypt.hashSync(Config.password, 10)
+    username: Config.loginUsername,
+    password: bcrypt.hashSync(Config.loginPassword, 10)
   });
   if (Config.exampleData) {
     _.times(10, () => {
