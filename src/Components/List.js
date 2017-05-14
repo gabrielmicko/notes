@@ -13,7 +13,6 @@ class List extends React.Component {
     };
   }
   componentDidMount() {
-    console.log('LF');
     this.props.fetchAllNotes(this.props.token);
   }
 
@@ -71,8 +70,6 @@ class List extends React.Component {
     const noList = (
       <div className="nothing-here">There is nothing here yet.</div>
     );
-    console.log(notDeletedNotes);
-    console.log(this.props.notes.length);
     const listItem = notDeletedNotes === 0
       ? noList
       : <ul className="note-list">{noteList}</ul>;

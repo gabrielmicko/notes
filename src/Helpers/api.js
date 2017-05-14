@@ -127,7 +127,6 @@ function saveNotes(token, notes, masternotes) {
       let poppedNote = popNote(note.id);
       if (poppedNote) {
         if (poppedNote[0].deleted === true) {
-          console.log('~Deleted');
           actionPromises.push(deleteNote(token, poppedNote[0].id, ['id']));
         } else if (
           note.url !== poppedNote[0].url ||
@@ -135,7 +134,6 @@ function saveNotes(token, notes, masternotes) {
           note.text !== poppedNote[0].text ||
           note.private !== poppedNote[0].private
         ) {
-          console.log('~Update');
           actionPromises.push(
             editNote(
               token,
@@ -155,7 +153,6 @@ function saveNotes(token, notes, masternotes) {
     //Hozzáadás
     notes.forEach(function(note) {
       if (note.deleted === false) {
-        console.log('~Add');
         actionPromises.push(
           addNote(token, note.url, note.title, note.text, note.private, ['id'])
         );

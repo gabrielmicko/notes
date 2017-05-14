@@ -18,7 +18,6 @@ class Logout extends React.Component {
   }
 
   componentDidMount() {
-    console.log('MOUNT');
     this.props.logout();
   }
 
@@ -38,11 +37,8 @@ const mapDispatchToProps = (dispatch, state) => ({
   }
 });
 
-export default connect(
-  state => {
-    return {
-      token: state.token
-    };
-  },
-  mapDispatchToProps
-)(Logout);
+export default connect(state => {
+  return {
+    token: state.token
+  };
+}, mapDispatchToProps)(Logout);

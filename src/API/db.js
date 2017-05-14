@@ -61,8 +61,8 @@ Conn.sync({
   force: true
 }).then(() => {
   Users.create({
-    username: 'gabriel',
-    password: bcrypt.hashSync('gabriel', 10)
+    username: Config.username,
+    password: bcrypt.hashSync(Config.password, 10)
   });
   _.times(10, () => {
     return Notes.create({

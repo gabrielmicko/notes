@@ -1,35 +1,34 @@
 import jwt from 'jsonwebtoken';
-import Config from '../Config/config.json'
+import Config from '../Config/config.json';
 const secret = Config.tokenSecret;
 
 function login(user) {
-    return jwt.sign({
-      exp: Math.floor(Date.now() / 1000) + (60 * 60),
+  return jwt.sign(
+    {
+      exp: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60,
       data: user
-    }, secret);
+    },
+    secret
+  );
 }
 
 function getToken(token) {
   try {
     let data = jwt.verify(token, secret);
-    if(data) {
+    if (data) {
       return data.data;
     }
-  }
-  catch(e) {
-  }
+  } catch (e) {}
   return false;
 }
 
 function isToken(token) {
   try {
     let data = jwt.verify(token, secret);
-    if(data) {
+    if (data) {
       return true;
     }
-  }
-  catch(e) {
-  }
+  } catch (e) {}
   return false;
 }
 
