@@ -1,8 +1,9 @@
-import Menu from '../Components/Menu';
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { login } from '../Actions/login';
-import DocumentTitle  from 'react-document-title';
+import { setUsername } from '../Actions/settings';
+import DocumentTitle from 'react-document-title';
 
 class App extends React.Component {
   componentDidMount() {
@@ -10,30 +11,29 @@ class App extends React.Component {
   }
   render() {
     return (
-       <DocumentTitle title='Notes'>
-        <div className="page">
-          <h1>Notes</h1>
-          <Menu />
-          { this.props.children }
-        </div>
+      <DocumentTitle title="Notes">
+        {this.props.children}
       </DocumentTitle>
     );
   }
 }
 
 App.propTypes = {
-  children: PropTypes.element.isRequired,
-  boot: PropTypes.func.isRequired,
+  boot: PropTypes.func.isRequired
 };
 
-const mapDispatchToProps = ((dispatch, state) => ({
+const mapDispatchToProps = (dispatch, state) => ({
   boot: () => {
     let token = localStorage.getItem('token');
-    dispatch(login((token || false)));
+    let username = localStorage.getItem('username');
+    dispatch(login(token || false));
+    dispatch(setUsername(username || false));
   }
-}));
+});
 
-export default connect((state) => {
-  return {}
-}, mapDispatchToProps
-)(App)
+export default connect(
+  state => {
+    return {};
+  },
+  mapDispatchToProps
+)(App);

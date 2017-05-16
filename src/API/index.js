@@ -2,17 +2,20 @@ import Express from 'express';
 import GraphHTTP from 'express-graphql';
 import SchemaNotes from './schema';
 import Cors from 'cors';
+import Config from '../Config/config.json';
 
-
-const APP_PORT = 3100;
 const app = Express();
 
-app.use('/api', Cors(), GraphHTTP({
-  schema: SchemaNotes,
-  pretty: true,
-  graphiql: true,
-}));
+app.use(
+  '/api',
+  Cors(),
+  GraphHTTP({
+    schema: SchemaNotes,
+    pretty: true,
+    graphiql: true
+  })
+);
 
-app.listen(APP_PORT, () => {
-  console.log(`App is listening on port ${APP_PORT}`);
+app.listen(Config.graphQLPort, () => {
+  console.log(`App is listening on port ${Config.graphQLPort}`);
 });

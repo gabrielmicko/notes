@@ -1,7 +1,7 @@
 function login(token) {
   return {
     type: 'LOGIN',
-    token: token,
+    token: token
   };
 }
 

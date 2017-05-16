@@ -2,6 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 var buildPath = path.resolve(__dirname, 'public');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
 	entry: ['./src/index'],
@@ -29,7 +30,7 @@ module.exports = {
 				exclude: /(node_modules|bower_components)/
 			}, {
 				test: /\.less$/,
-				loaders: ['style-loader', 'css-loader', 'less-loader'],
+				loader: ExtractTextPlugin.extract("style-loader", "css-loader", "less-loader"),
 				include: path.join(__dirname, 'src', 'Less')
 			},
 			{
@@ -60,6 +61,7 @@ module.exports = {
 		new webpack.DefinePlugin({
 			'process.env.NODE_ENV': JSON.stringify('production')
 		}),
+		new ExtractTextPlugin('css/style.[hash].css'),
 		new HtmlWebpackPlugin({
 			filename: 'index.html',
 			template: 'src/Template/template.html',

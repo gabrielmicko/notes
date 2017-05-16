@@ -1,0 +1,96 @@
+.site.content .ceh {
+  margin: 0 0 0 50px;
+  position: relative;
+}
+.site.content .ceh .content.page {
+  width: 100%;
+  background-color: #ffffff;
+  min-height: 600px;
+}
+.site.content .ceh .content.page.fake-1 {
+  background-color: #f0eeef;
+  border: 2px solid #fff;
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(-3deg);
+}
+
+.site.content .ceh .content.page.fake-2 {
+  background-color: #f0eeef;
+  border: 2px solid #fff;
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(3deg);
+}
+
+.site.content .ceh .content.page.real {
+   box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+   border: 2px solid #fff;
+  background-color: #fefefe;
+  position: relative;
+  z-index: 1;
+}
+
+.site.content .ceh .content.page.real textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: transparent;
+  border: 0;
+  height: 504px;
+  overflow: auto;
+  color: #303030;
+  padding: 20px;
+  text-align: justify;
+}
+
+.site.content .ceh .real header {
+  height: 100px;
+  box-sizing: border-box;
+  background: #fbfcea;
+  background: -moz-linear-gradient(top, #fbfcea 0%, #fff6bf 100%);
+  background: -webkit-linear-gradient(top, #fbfcea 0%,#fff6bf 100%);
+  background: linear-gradient(to bottom, #fbfcea 0%,#fff6bf 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbfcea', endColorstr='#fff6bf',GradientType=0);
+  position: relative;
+}
+
+.site.content .ceh .real header:after {
+  display: block;
+  content: '';
+  height: 1px;
+  width:100%;
+  border-bottom: 1px dashed #e2dbaf;
+  position: absolute;
+  bottom: 3px;
+}
+
+.site.content .ceh .real header:before {
+  display: block;
+  content: '';
+  background-image: url('/img/ribbon.svg');
+  width: 63px;
+  height: 115px;
+  position: absolute;
+  right: 10px;
+  background-size: 63px 115px;
+  z-index: 1;
+  top: -5px;
+}
+
+.site.content .ceh .real header input {
+  font-family: "Grace";
+  border: 0;
+  height: 100px;
+  font-size: 30px;
+  width: 100%;
+  border: 0;
+  background-color: transparent;
+  padding-left: 20px;
+  box-sizing: border-box;
+  color: #303030;
+  padding-right: 75px;
+}

@@ -1,0 +1,65 @@
+.site.menu .option-holder {
+  border: 1px solid #9e6a52;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.site.menu .note-list-holder {
+  border: 2px solid #a79a8b;
+  border-radius: 15px;
+  background-color: #e3e3e3;
+  padding: 5px;
+}
+
+.site.menu .note-list-holder .nothing-here {
+  font-size: 12px;
+  background-color: #e6e6e6;
+  padding: 5px 3px;
+}
+
+.site.menu .note-list {
+  padding: 0;
+  margin: 3px 4px;
+}
+
+.site.menu .note-list li {
+  list-style-type: none;
+  background-color: #e6e6e6;
+  padding: 7px 5px 5px 25px;
+  border-bottom: 1px solid #d9d9d9;
+  margin-bottom: 3px;
+  height: 55px;
+  box-sizing: border-box;
+  position: relative;
+  border-radius: 0 0 3px 3px;
+}
+.site.menu .note-list li:before {
+  content: '';
+  display: block;
+  position: absolute;
+  left:0;
+  top: 0;
+  height: 100%;
+  background-color: #bbf4bd;
+  width: 10px;
+}
+
+.site.menu .note-list li.private:before {
+  background-color: #fbf4c0;
+}
+
+.site.menu .note-list a {
+  color: #303030;
+  font-size: 16px;
+  display:inline-block;
+  overflow:hidden;
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.site.menu .note-list .info {
+  font-size: 11px;
+  color: #8b8a8f;
+}

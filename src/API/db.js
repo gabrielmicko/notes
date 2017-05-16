@@ -5,43 +5,38 @@ import Config from '../Config/config.json';
 import bcrypt from 'bcrypt';
 import { encrypt } from './encrypt';
 
-const Conn = new Sequelize(
-  Config.db,
-  Config.username,
-  Config.password,
-  {
-    dialect: Config.dialect,
-    host: Config.host
-  }
-);
+const Conn = new Sequelize(Config.db, Config.username, Config.password, {
+  dialect: Config.dialect,
+  host: Config.host
+});
 
 const Notes = Conn.define('notes', {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
     primaryKey: true,
-    unique: true,
+    unique: true
   },
   url: {
     type: Sequelize.TEXT,
-    allowNull: true,
+    allowNull: true
   },
   title: {
     type: Sequelize.TEXT('long'),
-    allowNull: false,
+    allowNull: false
   },
   text: {
     type: Sequelize.TEXT('long'),
-    allowNull: false,
+    allowNull: false
   },
   private: {
     type: Sequelize.BOOLEAN,
-    defaultValue: 1,
+    defaultValue: 1
   },
   deleted: {
     type: Sequelize.BOOLEAN,
-    defaultValue: 0,
-  },
+    defaultValue: 0
+  }
 });
 
 const Users = Conn.define('users', {
@@ -49,35 +44,36 @@ const Users = Conn.define('users', {
     type: Sequelize.INTEGER,
     autoIncrement: true,
     primaryKey: true,
-    unique: true,
+    unique: true
   },
   username: {
     type: Sequelize.STRING,
     allowNull: false,
-    unique: true,
+    unique: true
   },
   password: {
     type: Sequelize.STRING,
-    allowNull: false,
-  },
+    allowNull: false
+  }
 });
 
 Conn.sync({
-  force: true,
+  force: Config.forceRewriteDB
 }).then(() => {
-   Users.create({
-    username: 'gabriel',
-    password: bcrypt.hashSync('gabriel', 10)
+  Users.create({
+    username: Config.loginUsername,
+    password: bcrypt.hashSync(Config.loginPassword, 10)
   });
-  _.times(10,
-    () => {
+  if (Config.exampleData) {
+    _.times(10, () => {
       return Notes.create({
-        url: encrypt(Faker.internet.url()),
+        url: encrypt(Faker.lorem.word()),
         title: encrypt(Faker.lorem.sentence()),
         text: encrypt(Faker.lorem.text()),
         private: Faker.random.boolean()
-      })
-    })
+      });
+    });
+  }
 });
 
 export default Conn;
