@@ -1,0 +1,48 @@
+@media screen and (max-width: 640px) {
+  html, body {
+    height: auto;
+  }
+  body {
+    background-size: auto 100%;
+  }
+  .site.menu .note-list {
+    max-height: 300px;
+    overflow: auto;
+  }
+  .page.container {
+    padding: 50px 20px 20px;
+    flex-direction: column;
+  }
+
+  .site.access .box {
+    margin: 0;
+  }
+  .site.access nav {
+    margin-bottom: 5px;
+  }
+  .site.access nav,
+  .site.access .box {
+    max-width: 100%;
+  }
+  .page.container .site {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+  .page.container .site.menu{
+    order: 2;
+    margin: 20px 0 20px;
+  }
+
+  .page.container .site.content {
+    order: 3;
+  }
+
+  .site.content .ceh {
+    margin: 20px 0 40px;
+  }
+
+  .page.container .site.access{
+    order: 1;
+    padding-left: 0;
+  }
+}
