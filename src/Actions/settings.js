@@ -5,6 +5,13 @@ function setUsername(username) {
   };
 }
 
+function setSearch(searchValue) {
+  return {
+    type: 'SET_SEARCH',
+    search: searchValue
+  };
+}
+
 function addLog(log) {
   let d = new Date();
   let m = d.getMinutes();
@@ -16,4 +23,4 @@ function addLog(log) {
   };
 }
 
-export { setUsername, addLog };
+export { setUsername, addLog, setSearch };

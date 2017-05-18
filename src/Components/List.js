@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { getNotes } from '../Helpers/api.js';
 import { setNotes, setMasterNotes } from '../Actions/notes.js';
+import SearchComponent from './Search';
 
 class List extends React.Component {
   constructor(props) {
@@ -45,26 +46,29 @@ class List extends React.Component {
     const noteList = this.props.notes.map((note, key) => {
       if (note.deleted) return;
       ++notDeletedNotes;
-      return (
-        <li key={key} className={isPrivateClass(note.private)}>
-          <Link
-            to={
-              '/note/' +
-                note.id +
-                (note.url ? '/' + encodeURIComponent(note.url) : '')
-            }
-          >
-            {note.title}
-          </Link>
-          <div className="info">
-            <i className="fa fa-clock-o" />
-            {' '}
-            {note.updatedAt}
-            {', '}
-            {isPrivate(note.private)}
-          </div>
-        </li>
-      );
+      const haystack = note.title + note.url;
+      if (haystack.indexOf(this.props.searchValue) !== -1) {
+        return (
+          <li key={key} className={isPrivateClass(note.private)}>
+            <Link
+              to={
+                '/note/' +
+                  note.id +
+                  (note.url ? '/' + encodeURIComponent(note.url) : '')
+              }
+            >
+              {note.title}
+            </Link>
+            <div className="info">
+              <i className="fa fa-clock-o" />
+              {' '}
+              {note.updatedAt}
+              {', '}
+              {isPrivate(note.private)}
+            </div>
+          </li>
+        );
+      }
     });
 
     const noList = (
@@ -76,6 +80,7 @@ class List extends React.Component {
 
     return (
       <div className="option-holder">
+        <SearchComponent />
         <div className="note-list-holder">
           {listItem}
         </div>
@@ -86,7 +91,8 @@ class List extends React.Component {
 
 List.propTypes = {
   fetchAllNotes: PropTypes.func.isRequired,
-  token: PropTypes.any.isRequired
+  token: PropTypes.any.isRequired,
+  searchValue: PropTypes.any.isRequired
 };
 
 const mapDispatchToProps = (dispatch, state) => ({
@@ -110,6 +116,7 @@ const mapDispatchToProps = (dispatch, state) => ({
 export default connect(state => {
   return {
     notes: state.notes,
-    token: state.token
+    token: state.token,
+    searchValue: state.settings.search
   };
 }, mapDispatchToProps)(List);

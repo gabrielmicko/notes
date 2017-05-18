@@ -1,6 +1,7 @@
 let settings = {
   username: false,
-  log: []
+  log: [],
+  search: ''
 };
 
 const login = (state = settings, action) => {
@@ -13,6 +14,11 @@ const login = (state = settings, action) => {
     case 'ADD_LOG':
       var settings = Object.assign({}, state);
       settings.log = [...[action.log], ...state.log];
+      return settings;
+      break;
+    case 'SET_SEARCH':
+      var settings = Object.assign({}, state);
+      settings.search = action.search;
       return settings;
       break;
     default:
