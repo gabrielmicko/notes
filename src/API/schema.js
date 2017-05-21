@@ -185,6 +185,14 @@ const Query = new GraphQLObjectType({
               where: args,
               raw: true
             });
+          } else {
+            return Db.models.notes.findAll({
+              where: {
+                id: args.id,
+                private: false
+              },
+              raw: true
+            });
           }
           return [];
         }

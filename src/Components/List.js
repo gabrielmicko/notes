@@ -14,7 +14,12 @@ class List extends React.Component {
     };
   }
   componentDidMount() {
-    this.props.fetchAllNotes(this.props.token);
+    //Ha van token akkor
+    if (this.state.token) {
+      this.props.fetchAllNotes(this.props.token);
+    } else if (this.props.router.params.id) {
+      this.props.fetchANote(this.props.router.params.id);
+    }
   }
 
   componentWillReceiveProps(newProps) {
@@ -91,6 +96,7 @@ class List extends React.Component {
 
 List.propTypes = {
   fetchAllNotes: PropTypes.func.isRequired,
+  fetchANote: PropTypes.func.isRequired,
   token: PropTypes.any.isRequired,
   searchValue: PropTypes.any.isRequired
 };
@@ -98,6 +104,21 @@ List.propTypes = {
 const mapDispatchToProps = (dispatch, state) => ({
   fetchAllNotes: token => {
     getNotes(token, '', '', [
+      'id',
+      'url',
+      'title',
+      'text',
+      'private',
+      'deleted',
+      'createdAt',
+      'updatedAt'
+    ]).then(responseData => {
+      dispatch(setNotes(responseData.data.data.notes));
+      dispatch(setMasterNotes(responseData.data.data.notes));
+    });
+  },
+  fetchANote: id => {
+    getNotes('', id, '', [
       'id',
       'url',
       'title',

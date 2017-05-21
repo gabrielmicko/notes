@@ -161,7 +161,6 @@ function saveNotes(token, notes, masternotes) {
     });
   }
   if (notes.length > 0) {
-    //Hozzáadás
     notes.forEach(function(note) {
       if (note.deleted === false) {
         actionPromises.push(

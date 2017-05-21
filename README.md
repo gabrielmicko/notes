@@ -88,7 +88,8 @@ npm run lint
 * Linting
 * Autosave
 * Private / Public functionality does not make sense now, because the multi-user functionality is coming only with this version and that part has not been defined how it should work. Probably adding it with 1.2 version.
+* !There is a quick solution for viewing public notes. It does not work when you are logged in.
 * Notification for users when anything changes. It uses the LOG box now.
 
 ## Version
-1.1
+1.1.1
