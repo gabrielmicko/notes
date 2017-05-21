@@ -10,8 +10,20 @@ import {
 import moment from 'moment';
 import bcrypt from 'bcrypt';
 import Db from './db';
-import { login, getToken, isToken } from './jwt';
+import { login, getToken, isToken, getID } from './jwt';
 import { encrypt, decrypt } from './encrypt';
+import Config from '../Config/config.json';
+
+Db.sync({
+  force: Config.forceRewriteDB
+});
+
+function validateEmail(email) {
+  if (email.indexOf('@') !== -1) {
+    return true;
+  }
+  return false;
+}
 
 const Notes = new GraphQLObjectType({
   name: 'Notes',
@@ -22,6 +34,12 @@ const Notes = new GraphQLObjectType({
         type: GraphQLInt,
         resolve(note) {
           return note.id;
+        }
+      },
+      userId: {
+        type: GraphQLInt,
+        resolve(note) {
+          return note.userId;
         }
       },
       url: {
@@ -96,6 +114,48 @@ const Users = new GraphQLObjectType({
     };
   }
 });
+//
+// const Message = new GraphQLObjectType({
+//   name: 'Message',
+//   description: 'Adding messages to components.',
+//   fields: () => {
+//     return {
+//       code: {
+//         type: GraphQLInt,
+//         resolve(error) {
+//           return error.code;
+//         }
+//       },
+//       msg: {
+//         type: GraphQLString,
+//         resolve(error) {
+//           return error.msg;
+//         }
+//       }
+//     };
+//   }
+// });
+//
+// const UserWithMessage = new GraphQLObjectType({
+//   name: 'UserWithMessage',
+//   description: 'User with any message.',
+//   fields: () => {
+//     return {
+//       message: {
+//         type: new GraphQLList(Message),
+//         resolve(message) {
+//           return message.message;
+//         }
+//       },
+//       user: {
+//         type: Users,
+//         resolve(message) {
+//           return message.user;
+//         }
+//       }
+//     };
+//   }
+// });
 
 const Query = new GraphQLObjectType({
   name: 'Query',
@@ -116,19 +176,17 @@ const Query = new GraphQLObjectType({
           }
         },
         resolve(root, args) {
-          args.private = false;
           if (args.token && isToken(args.token)) {
-            delete args.private;
-          }
-
-          if (args.token) {
+            args.userId = getID(args.token);
             delete args.token;
-          }
-          args.deleted = false;
+            args.deleted = false;
 
-          return Db.models.notes.findAll({
-            where: args
-          });
+            return Db.models.notes.findAll({
+              where: args,
+              raw: true
+            });
+          }
+          return [];
         }
       },
       auth: {
@@ -157,7 +215,7 @@ const Query = new GraphQLObjectType({
                   users[0].password
                 );
                 if (comparePw) {
-                  users[0].token = login(users[0].username);
+                  users[0].token = login(users[0].id);
                   resolve(users);
                 }
               }
@@ -175,6 +233,47 @@ const Mutation = new GraphQLObjectType({
   description: 'Mutations.',
   fields() {
     return {
+      registerUser: {
+        type: new GraphQLList(Users),
+        args: {
+          username: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          password: {
+            type: new GraphQLNonNull(GraphQLString)
+          }
+        },
+        resolve(root, args) {
+          if (
+            args.username.toString().length > 3 &&
+            args.password.toString().length > 3 &&
+            validateEmail(args.username)
+          ) {
+            const createUser = Db.models.users.create(
+              {
+                username: args.username,
+                password: bcrypt.hashSync(args.password, 10)
+              },
+              {
+                raw: true
+              }
+            );
+            const createUserPromise = new Promise(resolve => {
+              createUser.then(
+                user => {
+                  resolve([user]);
+                },
+                reject => {
+                  resolve([]);
+                }
+              );
+            });
+            return createUserPromise;
+          } else {
+            throw new Error('The email or password is incorrect.');
+          }
+        }
+      },
       addNote: {
         type: new GraphQLList(Notes),
         args: {
@@ -202,7 +301,8 @@ const Mutation = new GraphQLObjectType({
                   url: encrypt(args.url),
                   title: encrypt(args.title),
                   text: encrypt(args.text),
-                  private: args.private
+                  private: args.private,
+                  userId: getID(args.token)
                 },
                 {
                   raw: true
@@ -249,6 +349,7 @@ const Mutation = new GraphQLObjectType({
         resolve(root, args) {
           if (args.token && isToken(args.token)) {
             return new Promise(resolve => {
+              const token = args.token;
               delete args.token;
               if (args.url) {
                 args.url = encrypt(args.url);
@@ -262,7 +363,8 @@ const Mutation = new GraphQLObjectType({
               var updateNote = Db.models.notes.update(args, {
                 where: {
                   id: args.id,
-                  deleted: false
+                  deleted: false,
+                  userId: getID(token)
                 }
               });
 
@@ -294,14 +396,15 @@ const Mutation = new GraphQLObjectType({
         resolve(root, args) {
           if (args.token && isToken(args.token)) {
             return new Promise(resolve => {
-              delete args.token;
-              var updateNote = Db.models.notes.update(
+              const userId = getID(args.token);
+              const updateNote = Db.models.notes.update(
                 {
                   deleted: true
                 },
                 {
                   where: {
-                    id: args.id
+                    id: args.id,
+                    userId: userId
                   }
                 }
               );
@@ -310,7 +413,8 @@ const Mutation = new GraphQLObjectType({
                 resolve(
                   Db.models.notes.findAll({
                     where: {
-                      id: args.id
+                      id: args.id,
+                      userId: userId
                     }
                   })
                 );

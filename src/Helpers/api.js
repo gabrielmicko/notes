@@ -45,6 +45,17 @@ function getNotes(token = '', id = '', title = '', args = []) {
   return query(queryString);
 }
 
+function registerUser(username, password, args = []) {
+  if (args) {
+    args = args.join(',');
+  }
+  let registerUser = `mutation registerUser($username:String!,$password:String!){registerUser(username:$username,password:$password){${args} }}`;
+  return post(registerUser, {
+    username: username,
+    password: password
+  });
+}
+
 function addNote(
   token = '',
   url = '',
@@ -162,4 +173,13 @@ function saveNotes(token, notes, masternotes) {
   return Promise.all(actionPromises);
 }
 
-export { getNotes, query, addNote, editNote, deleteNote, auth, saveNotes };
+export {
+  getNotes,
+  query,
+  addNote,
+  editNote,
+  deleteNote,
+  auth,
+  saveNotes,
+  registerUser
+};

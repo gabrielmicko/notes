@@ -1,9 +1,5 @@
 import Sequelize from 'sequelize';
-import _ from 'lodash';
-import Faker from 'faker';
 import Config from '../Config/config.json';
-import bcrypt from 'bcrypt';
-import { encrypt } from './encrypt';
 
 const Conn = new Sequelize(Config.db, Config.username, Config.password, {
   dialect: Config.dialect,
@@ -16,6 +12,9 @@ const Notes = Conn.define('notes', {
     autoIncrement: true,
     primaryKey: true,
     unique: true
+  },
+  userId: {
+    type: Sequelize.INTEGER
   },
   url: {
     type: Sequelize.TEXT,
@@ -57,23 +56,6 @@ const Users = Conn.define('users', {
   }
 });
 
-Conn.sync({
-  force: Config.forceRewriteDB
-}).then(() => {
-  Users.create({
-    username: Config.loginUsername,
-    password: bcrypt.hashSync(Config.loginPassword, 10)
-  });
-  if (Config.exampleData) {
-    _.times(10, () => {
-      return Notes.create({
-        url: encrypt(Faker.lorem.word()),
-        title: encrypt(Faker.lorem.sentence()),
-        text: encrypt(Faker.lorem.text()),
-        private: Faker.random.boolean()
-      });
-    });
-  }
-});
+Users.hasMany(Notes);
 
 export default Conn;

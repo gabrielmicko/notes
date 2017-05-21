@@ -3,7 +3,6 @@
 This is a very simple and easy to use note taking application.
 Functionalities:
 * Making private and public notes accessible on a unique url.
-* Access for 1 user.
 * Logged in user can Add, Modify (title, text, private flag, url), Delete notes.
 
 
@@ -44,10 +43,7 @@ Copy src/Config/Config.example.json to src/Config/Config.json and set up your co
   "cryptSecret": "d6F3Efeq", //Crypting secret
   "graphQLServer": "http://localhost:3100/api", // The GraphQL endpoint what the front-end can access
   "graphQLPort": 3100, // Port of the GraphQL server
-  "loginUsername": "gabriel", // Your username for the application
-  "loginPassword": "gabriel", // Your password for the application
   "forceRewriteDB": false, // If you want to truncate and rewrite the entire db on start set this to true
-  "exampleData": true // If you want to have example data on start set this to true
 }
 ```
 
@@ -55,6 +51,10 @@ Copy src/Config/Config.example.json to src/Config/Config.json and set up your co
 Installing the packages.
 ```sh
 npm install
+```
+Seed the DB with dumb data. (Default user will be demo/demo)
+```sh
+npm run seed
 ```
 
 Starting up the GraphQL endpoint.
@@ -86,9 +86,9 @@ npm run lint
 
 ## Known issues:
 * Linting
-* Only one user can use the entire service, because the user handling has not been built yet. It was not the goal of 1.0.
 * Autosave
+* Private / Public functionality does not make sense now, because the multi-user functionality is coming only with this version and that part has not been defined how it should work. Probably adding it with 1.2 version.
 * Notification for users when anything changes. It uses the LOG box now.
 
 ## Version
-1.0
+1.1

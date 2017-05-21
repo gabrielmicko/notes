@@ -9,7 +9,7 @@ class Insert extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      token: '',
+      token: false,
       authUsername: '',
       username: '',
       password: ''
@@ -47,15 +47,12 @@ class Insert extends React.Component {
   }
 
   render() {
-    const authText = this.state.token || this.state.authUsername
-      ? <h3>Welcome <strong>{this.state.authUsername}</strong>!</h3>
-      : <h3>Authentication</h3>;
-
     const authBox = !this.state.token
       ? <form className="form" onSubmit={this.handleSubmit}>
           <label>
             <i className="fa fa-user" />
             <input
+              placeholder="E-mail"
               type="text"
               name="username"
               value={this.state.username}
@@ -65,6 +62,7 @@ class Insert extends React.Component {
           <label>
             <i className="fa fa-key" />
             <input
+              placeholder="Password"
               type="password"
               name="password"
               value={this.state.password}
@@ -81,12 +79,7 @@ class Insert extends React.Component {
           </div>
         </form>;
 
-    return (
-      <div className="box">
-        {authText}
-        {authBox}
-      </div>
-    );
+    return authBox;
   }
 }
 
@@ -118,12 +111,9 @@ const mapDispatchToProps = (dispatch, state) => ({
   }
 });
 
-export default connect(
-  state => {
-    return {
-      token: state.token,
-      authUsername: state.settings.username
-    };
-  },
-  mapDispatchToProps
-)(Insert);
+export default connect(state => {
+  return {
+    token: state.token,
+    authUsername: state.settings.username
+  };
+}, mapDispatchToProps)(Insert);

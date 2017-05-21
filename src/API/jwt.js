@@ -32,4 +32,25 @@ function isToken(token) {
   return false;
 }
 
-export { login, getToken, isToken };
+function decodeToken(token) {
+  try {
+    let data = jwt.decode(token, secret);
+    return data;
+  } catch (e) {
+    return false;
+  }
+}
+
+function getID(token) {
+  try {
+    let data = decodeToken(token);
+    if (data) {
+      return data.data;
+    }
+    return false;
+  } catch (e) {
+    return false;
+  }
+}
+
+export { login, getToken, isToken, decodeToken, getID };

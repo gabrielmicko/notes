@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Login from './Login';
+import Auth from './Auth';
 import _find from 'lodash/find';
 import { updateNoteByProperty } from '../Actions/notes.js';
 import { addLog } from '../Actions/settings.js';
@@ -13,13 +13,6 @@ import {
   setMasterNotes
 } from '../Actions/notes';
 import { getNotes, saveNotes } from '../Helpers/api.js';
-/*
-import { pushNote } from '../Actions/notes';
-import { getNotes, editNote } from '../Helpers/api.js';
-import { updateNote } from '../Actions/notes.js';
-import _findIndex from 'lodash/findIndex';
-import {browserHistory} from 'react-router';
-*/
 
 class Options extends React.Component {
   constructor(props) {
@@ -169,7 +162,7 @@ class Options extends React.Component {
 
     return (
       <div>
-        <Login />
+        <Auth />
         <h3 className="options">Options</h3>
         <nav>
           <div className="option-list">

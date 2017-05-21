@@ -7,6 +7,10 @@ body {
   background-repeat: no-repeat;
   font-family: 'Raleway Webfont', sans-serif;
 }
+
+input:autofill, textarea:-webkit-autofill, select:-webkit-autofill {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+}
 h1,h2,h3,h4,h5,h6 {
   margin: 0;
   font-weight: normal;
@@ -40,6 +44,9 @@ textarea,
 button {
   outline: 0;
   outline-width: 0;
+}
+input::placeholder {
+  color: rgba(195, 176, 169, 0.5);
 }
 a,
 a:visited {

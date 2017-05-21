@@ -9,8 +9,5 @@
   "cryptSecret": "d6F3Efeq",
   "graphQLServer": "http://localhost:3100/api",
   "graphQLPort": 3100,
-  "loginUsername": "gabriel",
-  "loginPassword": "gabriel",
-  "forceRewriteDB": false,
-  "exampleData": true
+  "forceRewriteDB": false
 }

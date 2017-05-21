@@ -21,6 +21,11 @@ const login = (state = settings, action) => {
       settings.search = action.search;
       return settings;
       break;
+    case 'SET_BOXSTATE':
+      var settings = Object.assign({}, state);
+      settings.boxState = action.state;
+      return settings;
+      break;
     default:
       return state;
   }

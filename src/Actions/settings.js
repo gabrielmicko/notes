@@ -12,6 +12,13 @@ function setSearch(searchValue) {
   };
 }
 
+function setBoxState(boxState) {
+  return {
+    type: 'SET_BOXSTATE',
+    state: boxState
+  };
+}
+
 function addLog(log) {
   let d = new Date();
   let m = d.getMinutes();
@@ -23,4 +30,4 @@ function addLog(log) {
   };
 }
 
-export { setUsername, addLog, setSearch };
+export { setUsername, addLog, setSearch, setBoxState };
